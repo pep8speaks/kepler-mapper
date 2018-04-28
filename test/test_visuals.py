@@ -9,6 +9,42 @@ from kmapper.visuals import (init_color_function, format_meta, dict_to_json)
 np.random.seed(1)
 
 
+"""
+    Interested in rebuilding the API of kepler mapper so it is more intuitive
+
+
+    Should Kepler Mapper be split into two objects?
+
+    I don't get how distance_matrix works
+
+    The visualize method should have sane defaults.
+        
+    Tooltips   
+        - Tooltips should default to showing the ID of data point in each node.
+        - Tooltips should be able to be disabled.
+        - Tooltips should be able to show aggregate data for each node.
+        - Tooltips should easily be able to export the data.
+
+    Graph
+        - Graph should be able to be frozen.
+        - Graph should be able to switch between multiple coloring functions.
+        - Should be able to remove nodes from graph (so you can clean out noise)
+        - Edits should be able to be saved. Can re-export the html file so you can open it in the same state.
+        - Color funcs should be easier to use.
+        - Should be able to choose any D3 palette
+        - Cold is low, hot is high.
+    
+    Style:
+        - 'inverse_X' should just be called X
+        - More of the html stuff should be in the jinja2 stuff.
+        - If running from source, should be able to run offline
+
+    Map 
+        - Move all of these arguments into the init method
+
+"""
+
+
 
 class TestVisualHelpers():
     def test_color_function_type(self):
