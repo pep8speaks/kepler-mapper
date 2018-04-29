@@ -23,19 +23,19 @@ def init_color_function(graph, color_function=None):
 
 
 def format_meta(graph, custom_meta=None):
-    meta = ""
-    if custom_meta is not None:
-        for k, v in custom_meta:
-            meta += "<h3>%s</h3>\n<p>%s</p>\n" % (k, v)
-    meta += "<h3>Nodes</h3><p>%s</p>" % (len(graph["nodes"]))
-    meta += "<h3>Edges</h3><p>%s</p>" % (sum([len(l)
-                                              for l in graph["links"].values()]))
-    meta += "<h3>Total Samples</h3><p>%s</p>" % (
-        sum([len(l) for l in graph["nodes"].values()]))
+
     n = [l for l in graph["nodes"].values()]
     n_unique = len(set([i for s in n for i in s]))
-    meta += "<h3>Unique Samples</h3><p>%s</p>" % (n_unique)
-    return meta
+
+    mapper_summary = {
+        "custom_meta": custom_meta,
+        "n_nodes": len(graph["nodes"]),
+        "n_edges": sum([len(l) for l in graph["links"].values()]),
+        "n_total": sum([len(l) for l in graph["nodes"].values()]),
+        "n_unique": n_unique
+    }    
+
+    return mapper_summary
 
 
 def format_mapper_data(graph, color_function, X,

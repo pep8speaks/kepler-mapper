@@ -1,4 +1,6 @@
 import os
+import numbers
+
 import pytest
 
 import numpy as np
@@ -89,10 +91,16 @@ class TestVisualHelpers():
         lens = mapper.fit_transform(data, projection=[0])
         graph = mapper.map(lens, data)
 
-        assert("<p>%s</p>"%(len(graph["nodes"])) in format_meta(graph))
-        assert("<h3>Description</h3>\n<p>A short description</p>" in 
-            format_meta(graph,
-                custom_meta=[("Description", "A short description")]))
+        fmt = format_meta(graph)
+        assert fmt['n_nodes'] == len(graph["nodes"])
+
+        assert 'n_edges' in fmt.keys()
+        assert 'n_total' in fmt.keys()
+
+        del fmt['custom_meta']
+        vals = fmt.values()
+        for v in vals:
+            assert isinstance(v, numbers.Number)
 
     def test_format_mapper_data(self, jinja_env):
         mapper = KeplerMapper()
