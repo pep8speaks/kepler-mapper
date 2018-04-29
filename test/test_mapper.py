@@ -212,12 +212,12 @@ class TestAPIMaintenance():
         lens = mapper.fit_transform(data)
 
         _ = mapper.map(lens, data, nr_cubes=10)
-        c2 = mapper.coverer
+        c2 = mapper.cover
 
-        assert c2.overlap_perc == 0.1
+        assert c2.perc_overlap == 0.1
 
         _ = mapper.map(lens, data, overlap_perc=0.1)
-        c2 = mapper.coverer
+        c2 = mapper.cover
 
         assert c2.n_cubes == 10
 

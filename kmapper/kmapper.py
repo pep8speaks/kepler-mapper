@@ -36,10 +36,6 @@ class KeplerMapper(object):
 
     def __init__(self, verbose=0):
         # TODO: move as many of the arguments from fit_transform and map into here.
-<<<<<<< HEAD
-=======
-
->>>>>>> d911ccf... Fix pep8 errors in kmapper/kmapper.py
         self.verbose = verbose
         self.chunk_dist = []
         self.overlap_dist = []
