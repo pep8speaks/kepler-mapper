@@ -6,6 +6,7 @@ from collections import defaultdict
 
 
 def init_color_function(graph, color_function=None):
+
     # If no color_function provided we color by row order in data set
     # Reshaping to 2-D array is required for sklearn 0.19
     n_samples = np.max([i for s in graph["nodes"].values() for i in s]) + 1
@@ -13,6 +14,8 @@ def init_color_function(graph, color_function=None):
         color_function = np.arange(n_samples).reshape(-1, 1)
     else:
         color_function = color_function.reshape(-1, 1)
+    
+    color_function = color_function.astype(np.float64)
     # MinMax Scaling to be friendly to non-scaled input.
     scaler = preprocessing.MinMaxScaler()
     color_function = scaler.fit_transform(color_function).ravel()
@@ -35,7 +38,7 @@ def format_meta(graph, custom_meta=None):
     return meta
 
 
-def dict_to_json(graph, color_function, X,
+def format_mapper_data(graph, color_function, X,
                  X_names, lens, lens_names, custom_tooltips):
     # import pdb; pdb.set_trace()
     json_dict = {"nodes": [], "links": []}
@@ -60,21 +63,21 @@ def dict_to_json(graph, color_function, X,
                  "target": node_id_to_num[linked_node_id],
                  "width": _size_link_width(graph, node_id, linked_node_id)}
             json_dict["links"].append(l)
-    return json.dumps(json_dict)
+    return json_dict
 
 
-def color_function_distribution(graph, color_function):
+def graph_data_distribution(graph, color_function):
     # TODO: accept a color palette instead of this
-    bin_colors = {0: "#FF2800",
-                  1: "#FF6400",
-                  2: "#FFa000",
-                  3: "#FFdc00",
-                  4: "#b0ff00",
-                  5: "#00ff36",
-                  6: "#00e4ff",
-                  7: "#0084ff",
-                  8: "#0022ff",
-                  9: "#0300ff"}
+    bin_colors = {9: "#FF2800",
+                  8: "#FF6400",
+                  7: "#FFa000",
+                  6: "#FFdc00",
+                  5: "#b0ff00",
+                  4: "#00ff36",
+                  3: "#00e4ff",
+                  2: "#0084ff",
+                  1: "#0022ff",
+                  0: "#0300ff"}
 
     dist = '  <h3>Distribution</h3>\n  <div id="histogram">\n'
     buckets = defaultdict(float)

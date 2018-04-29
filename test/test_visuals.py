@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.datasets import make_circles
 from kmapper import KeplerMapper
 
-from kmapper.visuals import (init_color_function, format_meta, dict_to_json)
+from kmapper.visuals import init_color_function, format_meta, format_mapper_data
 
 
 
@@ -85,7 +85,7 @@ class TestVisualHelpers():
             format_meta(graph,
                 custom_meta=[("Description", "A short description")]))
 
-    def test_dict_to_json(self):
+    def test_format_mapper_data(self):
         mapper = KeplerMapper()
         data, labels = make_circles(1000, random_state=0)
         lens = mapper.fit_transform(data, projection=[0])
@@ -98,13 +98,15 @@ class TestVisualHelpers():
         inverse_X_names = ["inverse_%s"%(i) for i in range(inverse_X.shape[1])]
         custom_tooltips = np.array(["customized_%s"%(l) for l in labels])
 
-        json = dict_to_json(graph, color_function, inverse_X,
+        graph_data = format_mapper_data(graph, color_function, inverse_X,
                  inverse_X_names, projected_X, projected_X_names, custom_tooltips)
 
-        assert("""name": "cube2_cluster0""" in json)
-        assert("""projected_0""" in json)
-        assert("""inverse_0""" in json)
-        assert("""customized_""" in json)
+        # TODO test more properties!
+        assert 'name' in graph_data['nodes'][0].keys()
+        # assert "cube2_cluster0" == graph_data['name']
+        # assert """projected_0""" in graph_data.keys()
+        # assert """inverse_0""" in graph_data
+        # assert """customized_""" in graph_data
 
 
 class TestVisualizeIntegration():

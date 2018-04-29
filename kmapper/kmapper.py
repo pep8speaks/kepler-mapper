@@ -17,7 +17,7 @@ from scipy.sparse import issparse
 
 from .cover import Cover
 from .nerve import GraphNerve
-from .visuals import init_color_function, format_meta, dict_to_json, color_function_distribution
+from .visuals import init_color_function, format_meta, format_mapper_data, graph_data_distribution
 
 
 class KeplerMapper(object):
@@ -184,7 +184,6 @@ class KeplerMapper(object):
                 print("\n..Created projection shaped %s" % (str(X.shape)))
 
         # Scaling
-        import pdb; pdb.set_trace()
         if scaler is not None:
             if self.verbose > 0:
                 print("\n..Scaling with: %s\n" % str(scaler))
@@ -454,17 +453,14 @@ class KeplerMapper(object):
         #   - Allow multiple color functions that can be toggled on and off.
 
 
-
+        # Color function is a vector of colors?
         color_function = init_color_function(graph, color_function)
         
+        mapper_data = format_mapper_data(graph, color_function, X,
+                                         X_names, lens, 
+                                         lens_names, custom_tooltips)
         
-        json_graph = dict_to_json(graph, color_function, X,
-                                  X_names, lens, 
-                                  lens_names, custom_tooltips)
-        
-        
-        
-        histogram = color_function_distribution(graph, color_function)
+        histogram = graph_data_distribution(graph, color_function)
         
         
         mapper_summary = format_meta(graph, custom_meta)
@@ -482,12 +478,13 @@ class KeplerMapper(object):
         module_root = os.path.join(os.path.dirname(__file__), 'templates')
         env = Environment(loader=FileSystemLoader(module_root))
 
+   
         # Render the Jinja template, filling fields as appropriate
         template = env.get_template('base.html').render(
             title=title,
             mapper_summary=mapper_summary,
             histogram=histogram,
-            json_graph=json_graph,
+            mapper_data=mapper_data,
             js_text=js_text,
             css_text=css_text)
 
