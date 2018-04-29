@@ -25,7 +25,7 @@ def format_meta(graph, custom_meta=None):
 
     n = [l for l in graph["nodes"].values()]
     n_unique = len(set([i for s in n for i in s]))
-
+    
     mapper_summary = {
         "custom_meta": custom_meta,
         "n_nodes": len(graph["nodes"]),

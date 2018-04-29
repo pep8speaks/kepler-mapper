@@ -1,5 +1,6 @@
 from __future__ import division
 
+import warnings
 from itertools import product
 import numpy as np
 
@@ -9,9 +10,15 @@ class Cover():
     """Helper class that defines the default covering scheme
     """
 
-    def __init__(self, n_cubes=10, overlap_perc=0.2):
+    def __init__(self, n_cubes=10, perc_overlap=0.2, overlap_perc=None):
         self.n_cubes = n_cubes
-        self.overlap_perc = overlap_perc
+        self.perc_overlap = perc_overlap
+
+        if overlap_perc is not None:
+            self.perc_overlap = overlap_perc
+
+            warnings.warn(
+                "`overlap_perc` has been replaced with `perc_overlap`. Use `perc_overlap` instead.", DeprecationWarning)
 
     def define_bins(self, data):
         """Returns an iterable of all bins in the cover.
@@ -31,7 +38,7 @@ class Cover():
         self.chunk_dist = (bounds[1] - bounds[0]) / self.n_cubes
 
         # We calculate the overlapping windows distance
-        self.overlap_dist = self.overlap_perc * self.chunk_dist
+        self.overlap_dist = self.perc_overlap * self.chunk_dist
 
         # We find our starting point
         self.d = bounds[0]
