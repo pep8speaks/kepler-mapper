@@ -6,7 +6,6 @@ from collections import defaultdict
 
 
 def init_color_function(graph, color_function=None):
-
     # If no color_function provided we color by row order in data set
     # Reshaping to 2-D array is required for sklearn 0.19
     n_samples = np.max([i for s in graph["nodes"].values() for i in s]) + 1
@@ -192,7 +191,6 @@ def _format_projection_statistics(member_ids, lens, lens_names):
 
 def _format_tooltip(env, member_ids, custom_tooltips, X,
                     X_names, lens, lens_names):
-
     # TODO: Allow customization in the form of aggregate per node and per entry in node.
     # TODO: Allow users to turn off tooltip completely.
 
@@ -203,7 +201,7 @@ def _format_tooltip(env, member_ids, custom_tooltips, X,
 
     projection_stats = _format_projection_statistics(
         member_ids, lens, lens_names)
-    cluster_stats  = _format_cluster_statistics(member_ids, X, X_names)
+    cluster_stats = _format_cluster_statistics(member_ids, X, X_names)
 
     tooltip = env.get_template('cluster_tooltip.html').render(
         projection_stats=projection_stats,
