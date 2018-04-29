@@ -1,9 +1,12 @@
+import os
+import pytest
+
 import numpy as np
 from sklearn.datasets import make_circles
 from kmapper import KeplerMapper
 
 from kmapper.visuals import init_color_function, format_meta, format_mapper_data
-
+from jinja2 import Environment, FileSystemLoader
 
 
 np.random.seed(1)
@@ -45,6 +48,12 @@ np.random.seed(1)
 """
 
 
+@pytest.fixture
+def jinja_env():
+    # Find the module absolute path and locate templates
+    module_root = os.path.join(os.path.dirname(__file__), '../kmapper/templates')
+    env = Environment(loader=FileSystemLoader(module_root))
+    return env
 
 class TestVisualHelpers():
     def test_color_function_type(self):
@@ -85,7 +94,7 @@ class TestVisualHelpers():
             format_meta(graph,
                 custom_meta=[("Description", "A short description")]))
 
-    def test_format_mapper_data(self):
+    def test_format_mapper_data(self, jinja_env):
         mapper = KeplerMapper()
         data, labels = make_circles(1000, random_state=0)
         lens = mapper.fit_transform(data, projection=[0])
@@ -99,7 +108,7 @@ class TestVisualHelpers():
         custom_tooltips = np.array(["customized_%s"%(l) for l in labels])
 
         graph_data = format_mapper_data(graph, color_function, inverse_X,
-                 inverse_X_names, projected_X, projected_X_names, custom_tooltips)
+                 inverse_X_names, projected_X, projected_X_names, custom_tooltips, jinja_env)
 
         # TODO test more properties!
         assert 'name' in graph_data['nodes'][0].keys()
