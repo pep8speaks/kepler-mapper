@@ -82,6 +82,11 @@ def graph_data_distribution(graph, color_function):
     dist = '  <h3>Distribution</h3>\n  <div id="histogram">\n'
     buckets = defaultdict(float)
 
+
+
+
+    # TODO: this histogram groups all points in a node in the same bin. 
+    #       This might yield unintuitive results
     for i, (node_id, member_ids) in enumerate(graph["nodes"].items()):
         # round to color range value to nearest 3 multiple
         k = int(round(_color_function(member_ids, color_function) / 3.0))
@@ -91,18 +96,26 @@ def graph_data_distribution(graph, color_function):
     #       prime numbers for equidistant binning...)
     buckets[9] += buckets[10]
 
+
+    histogram = []
     max_bucket_value = max(buckets.values())
     sum_bucket_value = sum(list(set(buckets.values())))
     for bucket_id in range(10):
+        
+
         bucket_value = buckets[bucket_id]
         height = int(((bucket_value / max_bucket_value) * 100) + 5)
         perc = round((bucket_value / sum_bucket_value) * 100., 1)
-        dist += '    <div class="bin" style="height: %spx; background:%s">\n' % (height,
-                                                                                 bin_colors[bucket_id]) + \
-                '      <div>%s%%</div>\n' % (perc) + \
-                '    </div>\n'
-    dist += '  </div>'
-    return dist
+        color = bin_colors[bucket_id]
+
+        histogram.append({
+            'height': height,
+            'perc': perc,
+            'color': color
+        })
+
+
+    return histogram
 
 
 def _format_cluster_statistics(member_ids, X, X_names):
