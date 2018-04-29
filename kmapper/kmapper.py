@@ -36,6 +36,10 @@ class KeplerMapper(object):
 
     def __init__(self, verbose=0):
         # TODO: move as many of the arguments from fit_transform and map into here.
+<<<<<<< HEAD
+=======
+
+>>>>>>> d911ccf... Fix pep8 errors in kmapper/kmapper.py
         self.verbose = verbose
         self.chunk_dist = []
         self.overlap_dist = []
@@ -82,11 +86,11 @@ class KeplerMapper(object):
 
         # If distance_matrix is a scipy.spatial.pdist string, we create a square distance matrix
         # from the vectors, before applying a projection.
-        if self.distance_matrix in ["braycurtis", "canberra",  "chebyshev", "cityblock", 
-                                    "correlation", "cosine",  "dice", "euclidean", "hamming",
-                                    "jaccard", "kulsinski","mahalanobis","matching","minkowski",
-                                    "rogerstanimoto","russellrao","seuclidean","sokalmichener",
-                                    "sokalsneath","sqeuclidean", "yule"]:
+        if self.distance_matrix in ["braycurtis", "canberra", "chebyshev", "cityblock",
+                                    "correlation", "cosine", "dice", "euclidean", "hamming",
+                                    "jaccard", "kulsinski", "mahalanobis", "matching", "minkowski",
+                                    "rogerstanimoto", "russellrao", "seuclidean", "sokalmichener",
+                                    "sokalsneath", "sqeuclidean", "yule"]:
             X = distance.squareform(distance.pdist(X, metric=distance_matrix))
             if self.verbose > 0:
                 print("Created distance matrix, shape: %s, with distance metric `%s`" %
@@ -119,7 +123,7 @@ class KeplerMapper(object):
 
             def dist_mean(X, axis=1):
                 X_mean = np.mean(X, axis=0)
-                X = np.sum(np.sqrt((X - X_mean)**2),axis=1)
+                X = np.sum(np.sqrt((X - X_mean)**2), axis=1)
                 return X
 
             projection_funcs = {
@@ -167,7 +171,6 @@ class KeplerMapper(object):
                     nn.fit(X)
                     X = np.sum(nn.kneighbors(X, n_neighbors=n_neighbors, return_distance=True)[
                                0], axis=1).reshape((X.shape[0], 1))
-
 
         # Detect if projection is a list (with dimension indices)
         if isinstance(projection, list):
@@ -241,7 +244,7 @@ class KeplerMapper(object):
 
         return lens
 
-    def map(self, 
+    def map(self,
             lens,
             X=None,
             clusterer=cluster.DBSCAN(eps=0.5, min_samples=3),
@@ -294,7 +297,6 @@ class KeplerMapper(object):
         >>>print(simplicial_complex["meta"])
 
         """
-
 
         start = datetime.now()
 
@@ -491,26 +493,23 @@ class KeplerMapper(object):
 
         """
 
-        # TODO: 
+        # TODO:
         #   - Make color functions more intuitive. How do they even work?
         #   - Allow multiple color functions that can be toggled on and off.
-
 
         # Find the module absolute path and locate templates
         module_root = os.path.join(os.path.dirname(__file__), 'templates')
         env = Environment(loader=FileSystemLoader(module_root))
 
-
         # Color function is a vector of colors?
         color_function = init_color_function(graph, color_function)
-        
+
         mapper_data = format_mapper_data(graph, color_function, X,
-                                         X_names, lens, 
+                                         X_names, lens,
                                          lens_names, custom_tooltips, env)
-        
+
         histogram = graph_data_distribution(graph, color_function)
-        
-        
+
         mapper_summary = format_meta(graph, custom_meta)
 
         # Find the absolute module path and the static files
@@ -521,7 +520,6 @@ class KeplerMapper(object):
         css_path = os.path.join(os.path.dirname(__file__), 'static', 'style.css')
         with open(css_path, 'r') as f:
             css_text = f.read()
-
 
         # Render the Jinja template, filling fields as appropriate
         template = env.get_template('base.html').render(
@@ -594,7 +592,7 @@ class KeplerMapper(object):
             estimator_type = getattr(model, "_estimator_type", None)
             if estimator_type == "classifier":
                 # classifier probabilities
-                X_blend = model.predict_proba(X_data) 
+                X_blend = model.predict_proba(X_data)
             elif estimator_type == "regressor":
                 X_blend = model.predict(X_data)
             else:

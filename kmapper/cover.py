@@ -6,6 +6,7 @@ import numpy as np
 
 # TODO: Incorporate @pablodecm's cover API.
 
+
 class Cover():
     """Helper class that defines the default covering scheme
     """
