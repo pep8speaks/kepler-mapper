@@ -33,8 +33,7 @@ lens = np.c_[lens1, lens2]
 # Create the simplicial complex
 graph = mapper.map(lens,
                    X,
-                   nr_cubes=15,
-                   overlap_perc=0.7,
+                   cover=km.Cover(n_cubes=15, perc_overlap=0.7),
                    clusterer=sklearn.cluster.KMeans(n_clusters=2,
                                                random_state=1618033))
 

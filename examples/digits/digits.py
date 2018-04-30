@@ -41,17 +41,15 @@ projected_data = mapper.fit_transform(data,
 # Create the graph (we cluster on the projected data and suffer projection loss)
 graph = mapper.map(projected_data,
                    clusterer=sklearn.cluster.DBSCAN(eps=0.3, min_samples=15),
-                   coverer=km.Cover(35, 0.9))
+                   cover=km.Cover(35, 0.9))
 
 # Create the visualizations (increased the graph_gravity for a tighter graph-look.)
 
 # Tooltips with image data for every cluster member
 mapper.visualize(graph,
                  path_html="keplermapper_digits_custom_tooltips.html",
-                 graph_gravity=0.25,
                  custom_tooltips=tooltip_s)
 # Tooltips with the target y-labels for every cluster member
 mapper.visualize(graph,
                  path_html="keplermapper_digits_ylabel_tooltips.html",
-                 graph_gravity=0.25,
                  custom_tooltips=labels)

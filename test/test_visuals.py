@@ -1,13 +1,61 @@
+import os
+import numbers
+
+import pytest
+
 import numpy as np
 from sklearn.datasets import make_circles
 from kmapper import KeplerMapper
 
-from kmapper.visuals import (init_color_function, format_meta, dict_to_json)
-
+from kmapper.visuals import init_color_function, format_meta, format_mapper_data
+from jinja2 import Environment, FileSystemLoader
 
 
 np.random.seed(1)
 
+
+"""
+    Interested in rebuilding the API of kepler mapper so it is more intuitive
+
+
+    Should Kepler Mapper be split into two objects?
+    I don't get how distance_matrix works
+
+
+    The visualize method should have sane defaults.
+        
+    Tooltips   
+        - [x] Tooltips should default to showing the ID of data point in each node.
+        - Tooltips should be able to be disabled.
+        - [was done already?] Tooltips should be able to show aggregate data for each node.
+        - [copy and pastable] Tooltips should easily be able to export the data.
+
+    Graph
+        - Graph should be able to be frozen.
+        - Graph should be able to switch between multiple coloring functions.
+        - Should be able to remove nodes from graph (so you can clean out noise)
+        - Edits should be able to be saved. Can re-export the html file so you can open it in the same state.
+        - Color funcs should be easier to use.
+        - Should be able to choose any D3 palette
+        - [x] Cold is low, hot is high.
+    
+    Style:
+        - [x] 'inverse_X' should just be called X
+        - [x] More of the html stuff should be in the jinja2 stuff.
+        - If running from source, should be able to run offline
+
+    Map 
+        - Move all of these arguments into the init method
+
+"""
+
+
+@pytest.fixture
+def jinja_env():
+    # Find the module absolute path and locate templates
+    module_root = os.path.join(os.path.dirname(__file__), '../kmapper/templates')
+    env = Environment(loader=FileSystemLoader(module_root))
+    return env
 
 
 class TestVisualHelpers():
@@ -44,31 +92,39 @@ class TestVisualHelpers():
         lens = mapper.fit_transform(data, projection=[0])
         graph = mapper.map(lens, data)
 
-        assert("<p>%s</p>"%(len(graph["nodes"])) in format_meta(graph))
-        assert("<h3>Description</h3>\n<p>A short description</p>" in 
-            format_meta(graph,
-                custom_meta=[("Description", "A short description")]))
+        fmt = format_meta(graph)
+        assert fmt['n_nodes'] == len(graph["nodes"])
 
-    def test_dict_to_json(self):
+        assert 'n_edges' in fmt.keys()
+        assert 'n_total' in fmt.keys()
+
+        del fmt['custom_meta']
+        vals = fmt.values()
+        for v in vals:
+            assert isinstance(v, numbers.Number)
+
+    def test_format_mapper_data(self, jinja_env):
         mapper = KeplerMapper()
         data, labels = make_circles(1000, random_state=0)
         lens = mapper.fit_transform(data, projection=[0])
         graph = mapper.map(lens, data)
 
-        color_function = lens[:,0]
+        color_function = lens[:, 0]
         inverse_X = data
         projected_X = lens
-        projected_X_names = ["projected_%s"%(i) for i in range(projected_X.shape[1])]
-        inverse_X_names = ["inverse_%s"%(i) for i in range(inverse_X.shape[1])]
-        custom_tooltips = np.array(["customized_%s"%(l) for l in labels])
+        projected_X_names = ["projected_%s" % (i) for i in range(projected_X.shape[1])]
+        inverse_X_names = ["inverse_%s" % (i) for i in range(inverse_X.shape[1])]
+        custom_tooltips = np.array(["customized_%s" % (l) for l in labels])
 
-        json = dict_to_json(graph, color_function, inverse_X,
-                 inverse_X_names, projected_X, projected_X_names, custom_tooltips)
+        graph_data = format_mapper_data(graph, color_function, inverse_X,
+                                        inverse_X_names, projected_X, projected_X_names, custom_tooltips, jinja_env)
 
-        assert("""name": "cube2_cluster0""" in json)
-        assert("""projected_0""" in json)
-        assert("""inverse_0""" in json)
-        assert("""customized_""" in json)
+        # TODO test more properties!
+        assert 'name' in graph_data['nodes'][0].keys()
+        # assert "cube2_cluster0" == graph_data['name']
+        # assert """projected_0""" in graph_data.keys()
+        # assert """inverse_0""" in graph_data
+        # assert """customized_""" in graph_data
 
 
 class TestVisualizeIntegration():
