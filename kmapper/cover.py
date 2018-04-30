@@ -11,15 +11,16 @@ class Cover():
     """Helper class that defines the default covering scheme
     """
 
-    def __init__(self, n_cubes=10, perc_overlap=0.2, overlap_perc=None):
+    def __init__(self, n_cubes=10, perc_overlap=0.2, nr_cubes=None, overlap_perc=None):
         self.n_cubes = n_cubes
         self.perc_overlap = perc_overlap
 
-        if overlap_perc is not None:
-            self.perc_overlap = overlap_perc
-
+        if overlap_perc is not None or nr_cubes is not None:
+            self.perc_overlap = overlap_perc if overlap_perc else perc_overlap
+            self.n_cubes = nr_cubes if nr_cubes else n_cubes
+            
             warnings.warn(
-                "`overlap_perc` has been replaced with `perc_overlap`. Use `perc_overlap` instead.", DeprecationWarning)
+                "Arguements `overlap_perc` and `nr_cubes` have been replaced with `perc_overlap` and `n_cubes`. Use `perc_overlap` and `n_cubes` instead. They will be removed in future releases.", DeprecationWarning)
 
     def define_bins(self, data):
         """Returns an iterable of all bins in the cover.
